@@ -1,0 +1,37 @@
+name: 🚀 Publicar Leilões Reversa
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  web-deploy:
+    name: 🎉 Deploy para Hostinger
+    runs-on: ubuntu-latest
+    steps:
+    - name: 🚚 Baixando Código
+      uses: actions/checkout@v4
+
+    - name: 🟢 Configurando Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: 📦 Instalando Dependências
+      run: npm install
+
+    - name: 🔨 Construindo Site (Build)
+      run: npm run build
+      env:
+        API_KEY: ${{ secrets.API_KEY }} 
+
+    - name: 📂 Sincronizando via FTP
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+      with:
+        server: ${{ secrets.FTP_SERVER }}
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        local-dir: ./dist/
+        server-dir: public_html/
+        delete-remote: true
