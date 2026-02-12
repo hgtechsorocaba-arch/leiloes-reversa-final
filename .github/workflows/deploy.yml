@@ -9,6 +9,9 @@ jobs:
   web-deploy:
     name: 🎉 Deploy para Hostinger
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      
     steps:
     - name: 🚚 Baixando Código
       uses: actions/checkout@v4
@@ -18,19 +21,19 @@ jobs:
       with:
         node-version: '20'
 
-    - name: 🧹 Limpeza Radical de Cache
+    - name: 🧹 Limpeza Radical
       run: |
-        npm cache clean --force
         rm -rf node_modules
         rm -f package-lock.json
 
-    - name: 📦 Instalando Dependências (Limpo)
-      run: npm install --no-package-lock
+    - name: 📦 Instalando Dependências
+      run: npm install --force
 
     - name: 🔨 Construindo Site (Build)
       run: npm run build
       env:
-        API_KEY: ${{ secrets.API_KEY }} 
+        CI: false
+        API_KEY: ${{ secrets.API_KEY }}
 
     - name: 📂 Sincronizando via FTP
       uses: SamKirkland/FTP-Deploy-Action@v4.3.5
@@ -43,3 +46,4 @@ jobs:
         protocol: ftp
         port: 21
         unsafe: true
+        timeout: 300000
