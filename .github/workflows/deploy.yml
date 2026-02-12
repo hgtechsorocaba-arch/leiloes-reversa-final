@@ -19,7 +19,9 @@ jobs:
         node-version: '20'
 
     - name: 📦 Instalando Dependências
-      run: npm install
+      run: |
+        rm -f package-lock.json
+        npm install
 
     - name: 🔨 Construindo Site (Build)
       run: npm run build
@@ -32,6 +34,10 @@ jobs:
         server: ${{ secrets.FTP_SERVER }}
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
+        # Pasta gerada pelo Vite
         local-dir: ./dist/
+        # Pasta de destino na Hostinger
         server-dir: public_html/
-        delete-remote: true
+        protocol: ftp
+        port: 21
+        unsafe: true
