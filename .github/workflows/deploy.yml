@@ -18,10 +18,14 @@ jobs:
       with:
         node-version: '20'
 
-    - name: 📦 Instalando Dependências
+    - name: 🧹 Limpeza Radical de Cache
       run: |
+        npm cache clean --force
+        rm -rf node_modules
         rm -f package-lock.json
-        npm install
+
+    - name: 📦 Instalando Dependências (Limpo)
+      run: npm install --no-package-lock
 
     - name: 🔨 Construindo Site (Build)
       run: npm run build
@@ -34,9 +38,7 @@ jobs:
         server: ${{ secrets.FTP_SERVER }}
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
-        # Pasta gerada pelo Vite
         local-dir: ./dist/
-        # Pasta de destino na Hostinger
         server-dir: public_html/
         protocol: ftp
         port: 21
